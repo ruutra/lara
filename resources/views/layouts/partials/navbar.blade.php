@@ -16,20 +16,14 @@
                         </strong>
                     </p>
                 </div>
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                       Users
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
 
-                        <li><a class="dropdown-item" href="#">{{auth()->user()->username}}</a></li>
-                    </ul>
+                <div class="text-end">
+                    <a href="{{ route('users.get') }}" class="btn btn-outline-light me-2">Users</a>
                 </div>
                 <div class="text-end">
                     <a href="{{ route('logout.perform') }}" class="btn btn-outline-light me-2">Logout</a>
                 </div>
             @endauth
-
             @guest
                 <div class="text-end">
                     <a href="{{ route('login.perform') }}" class="btn btn-outline-light me-2">Login</a>

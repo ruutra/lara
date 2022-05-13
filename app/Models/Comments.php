@@ -50,11 +50,15 @@ class Comments extends Model
      */
     public function getComments(int $userId): array
     {
-        return DB::table(self::getTable())
-            ->select('comments.*','users.username')
-            ->where(['comments.user_id' => $userId])
-            ->join('users','comments.author_id','=','users.id')
-            ->orderBy('comments.id')
+        return DB::table(self::getTable(), 'main')
+            ->select('main.*','users.username')
+            ->where(['main.user_id' => $userId])
+            ->join('users','main.author_id','=','users.id')
+            ->leftJoin('comments', 'main.parent_id','=','comments.id')
+            ->orderByRaw('coalesce(comments.created_at, main.created_at) desc')
+            ->orderByRaw('coalesce(comments.id, main.id)')
+            ->orderByRaw('(comments.id is null) desc')
+            ->orderByRaw('main.created_at asc')
             ->get()
             ->toArray();
     }
@@ -76,13 +80,19 @@ class Comments extends Model
            ->delete();
    }
 
-   public function replyComment(int $parentId)
+   public function replyComment(string $text, int $userId, int $parentId, User $currentUser)
    {
-       return DB::table(self::getTable())
-           ->select('comments.*','users.username')
-           ->where(['comments.parent_id'=>$parentId])
-           ->join('comments','comments.id','=','comments.parent_id')
-           ->orderBy('parent_id');
+       $comment = new self();
+       $comment->text = $text;
+       $comment->user_id = $userId;
+       $comment->author_id = $currentUser->id;
+       $comment->parent_id = $parentId;
+       $comment->save();
+//       return DB::table(self::getTable())
+//           ->select('comments.*')
+//           ->where(['comments.parent_id'=>$parentId])
+//           ->join('comments','comments.id','=','comments.parent_id')
+//           ->orderBy('parent_id');
    }
 
     public function user(): BelongsTo

@@ -43,8 +43,6 @@ class CommentsController extends Controller
         /** @var User $user */
         $user = Auth::user();
         (new Comments())->addComment($request->get('text'), $userId, $user);
-
-        $profile = $request->get('profile') ?? $user->id;
         return redirect('/' . $userId);
     }
 
@@ -60,8 +58,9 @@ class CommentsController extends Controller
         return redirect('/' . $userId);
     }
 
-    public function replyComments()
-    {
-
-    }
+   public function replyComments(int $userId, Request $request)
+   {
+       (new Comments())->replyComment($request->get('text'), $userId, $request->get('id'), Auth::user());
+       return redirect('/' . $userId);
+   }
 }

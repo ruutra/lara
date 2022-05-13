@@ -27,9 +27,13 @@ Route::group(['namespace' => 'App\Http\Controllers'], function()
 
     Route::group(['middleware' => ['auth']], function() {
         Route::get('/logout', 'LogoutController@perform')->name('logout.perform');
+
+        Route::get('/{id}/username',  'UserController@getUserName')->name('username.get');
+        Route::get('/users',  'UserController@getUsers')->name('users.get');
+
         Route::get('/{id}', 'CommentsController@getComments')->name('comment.get');
         Route::post('/{id}/add_comment', 'CommentsController@addComment')->name('comment.add');
         Route::delete('/{id}/delete_comment',  'CommentsController@destroy')->name('comment.delete');
-        Route::post('/{id}/reply_comment',  'CommentsController@replyComment')->name('comment.reply');
+        Route::post('/{id}/reply_comment',  'CommentsController@replyComments')->name('comment.reply');
     });
 });

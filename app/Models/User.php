@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
@@ -68,8 +69,22 @@ class User extends Authenticatable
         return $this->hasMany(Comments::class);
     }
 
-    public function getUserName()
+    /**
+     * @param $username
+     * @return array
+     */
+    public function getUserName($username)
     {
+        return DB::table(self::getTable())
+            ->select('users.username')
+            ->where(['users.username' => $username])
+            ->orderBy('users.id')
+            ->get()
+            ->toArray();
+    }
 
+    public function getUsers()
+    {
+        return self::query()->get();
     }
 }
