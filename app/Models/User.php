@@ -24,7 +24,6 @@ class User extends Authenticatable
      * @var string[]
      */
     protected $fillable = [
-        'name',
         'email',
         'username',
         'password',
@@ -64,4 +63,13 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    public function comments() {
+        return $this->hasMany(Comments::class);
+    }
+
+    public function getUserName()
+    {
+
+    }
 }

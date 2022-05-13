@@ -21,7 +21,7 @@ class Access extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function comments()
+    public function books()
     {
         return $this->belongsTo(Book::class);
     }

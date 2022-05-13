@@ -10,13 +10,27 @@ use Illuminate\Support\Facades\Validator;
 
 class CommentsController extends Controller
 {
-    public function getComments(Request $request)
+    /**
+     * @param int $userId
+     * @param Request $request
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
+    public function getComments(int $userId, Request $request)
     {
-        $comments = (new Comments())->getComments(Auth::user());
+        $comments = (new Comments())->getComments($userId);
+        if (empty($comments)) {
+            $comments = (new Comments())->getComments($userId);
+            return view('home.comments')->with('comments', $comments);
+        }
         return view('home.comments')->with('comments', $comments);
     }
 
-    public function addComment(Request $request)
+    /**
+     * @param int $userId
+     * @param Request $request
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function addComment(int $userId, Request $request)
     {
         $validator = Validator::make($request->all(), [
             'text' => 'required|string',
@@ -28,15 +42,26 @@ class CommentsController extends Controller
 
         /** @var User $user */
         $user = Auth::user();
-        (new Comments())->addComment($request->get('text'), $user);
+        (new Comments())->addComment($request->get('text'), $userId, $user);
 
         $profile = $request->get('profile') ?? $user->id;
-        return redirect('/' . $profile);
+        return redirect('/' . $userId);
     }
-    public function deleteUserComment(Request $request)
+
+    /**
+     * @param int $userId
+     * @param Request $request
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function destroy(int $userId, Request $request)
     {
-        $id = $request->input('id');
-        $deleted = DB::delete('delete from `laravel`.`comments` where `id` = ? and `user_id` = ?');
-        redirect('/');
+        $id = (int) $request->get('id');
+        (new Comments())->deleteComment($userId, $id, Auth::user());
+        return redirect('/' . $userId);
+    }
+
+    public function replyComments()
+    {
+
     }
 }
