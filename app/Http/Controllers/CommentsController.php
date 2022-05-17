@@ -4,7 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Comments;
 use App\Models\User;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -13,7 +19,7 @@ class CommentsController extends Controller
     /**
      * @param int $userId
      * @param Request $request
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     * @return Application|Factory|View
      */
     public function getComments(int $userId, Request $request)
     {
@@ -28,7 +34,18 @@ class CommentsController extends Controller
     /**
      * @param int $userId
      * @param Request $request
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @return Application|Factory|View
+     */
+    public function getAllComments(int $userId, Request $request)
+    {
+        $comments = (new Comments())->getComments($userId, null);
+        return view('home.comments')->with('comments', $comments);
+    }
+
+    /**
+     * @param int $userId
+     * @param Request $request
+     * @return Application|JsonResponse|RedirectResponse|Redirector
      */
     public function addComment(int $userId, Request $request)
     {
@@ -48,10 +65,11 @@ class CommentsController extends Controller
 
     /**
      * @param int $userId
+     * @param int $parentId
      * @param Request $request
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @return Application|RedirectResponse|Redirector
      */
-    public function destroy(int $userId, Request $request)
+    public function destroy(int $userId,Request $request)
     {
         $id = (int) $request->get('id');
         (new Comments())->deleteComment($userId, $id, Auth::user());

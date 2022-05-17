@@ -46,9 +46,10 @@ class Comments extends Model
 
     /**
      * @param int $userId
+     * @param int|null $limit
      * @return array
      */
-    public function getComments(int $userId): array
+    public function getComments(int $userId, ?int $limit = 5): array
     {
         return DB::table(self::getTable(), 'main')
             ->select('main.*','users.username')
@@ -59,6 +60,7 @@ class Comments extends Model
             ->orderByRaw('coalesce(comments.id, main.id)')
             ->orderByRaw('(comments.id is null) desc')
             ->orderByRaw('main.created_at asc')
+            ->limit($limit)
             ->get()
             ->toArray();
     }
@@ -69,13 +71,13 @@ class Comments extends Model
      * @param User $currentUser
      * @return bool
      */
-   public function deleteComment(int $userId, int $commentId, User $currentUser)
+   public function deleteComment(int $userId, int $commentId, User $currentUser): bool
    {
        return self::query()
            ->where([
                'id' => $commentId,
                'user_id' => $userId,
-               'author_id' => $currentUser->id
+               'author_id' => $currentUser->id,
            ])
            ->delete();
    }
@@ -88,11 +90,6 @@ class Comments extends Model
        $comment->author_id = $currentUser->id;
        $comment->parent_id = $parentId;
        $comment->save();
-//       return DB::table(self::getTable())
-//           ->select('comments.*')
-//           ->where(['comments.parent_id'=>$parentId])
-//           ->join('comments','comments.id','=','comments.parent_id')
-//           ->orderBy('parent_id');
    }
 
     public function user(): BelongsTo
