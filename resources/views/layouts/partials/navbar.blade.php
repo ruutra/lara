@@ -20,7 +20,10 @@
                     <a href="{{ route('users.get') }}" class="btn btn-outline-light me-2">Users</a>
                 </div>
                 <div class="text-end">
-                    <a href="library.blade.php" class="btn btn-outline-light me-2">Library</a>
+                    <a href="{{route('comment.get', ['id' => auth()->user()->id])}}" class="btn btn-outline-light me-2">Comments</a>
+                </div>
+                <div class="text-end">
+                    <a href="{{route('library.get', ['id' => auth()->user()->id])}}" class="btn btn-outline-light me-2">Library</a>
                 </div>
                 <div class="text-end">
                     <a href="{{ route('logout.perform') }}" class="btn btn-outline-light me-2">Logout</a>

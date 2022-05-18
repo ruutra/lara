@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,7 +18,12 @@ class CreateBooksTable extends Migration
             $table->id();
             $table->string('name');
             $table->text('text');
+            $table->boolean('public');
+            $table->foreignIdFor(User::class);
             $table->timestamps();
+            $table->foreign('user_id')
+                ->references('id')->on('users')
+                ->onDelete('cascade');
         });
     }
 

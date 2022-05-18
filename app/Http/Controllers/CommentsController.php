@@ -60,7 +60,7 @@ class CommentsController extends Controller
         /** @var User $user */
         $user = Auth::user();
         (new Comments())->addComment($request->get('text'), $userId, $user);
-        return redirect('/' . $userId);
+        return redirect(route('comment.get', ['id' => $userId]));
     }
 
     /**
@@ -73,12 +73,12 @@ class CommentsController extends Controller
     {
         $id = (int) $request->get('id');
         (new Comments())->deleteComment($userId, $id, Auth::user());
-        return redirect('/' . $userId);
+        return redirect(route('comment.get', ['id' => $userId]));
     }
 
    public function replyComments(int $userId, Request $request)
    {
        (new Comments())->replyComment($request->get('text'), $userId, $request->get('id'), Auth::user());
-       return redirect('/' . $userId);
+       return redirect(route('comment.get', ['id' => $userId]));
    }
 }

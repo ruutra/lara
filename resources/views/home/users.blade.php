@@ -3,7 +3,16 @@
         <h2>Пользователи</h2>
         @if (isset($users))
                 @foreach($users as $user)
-                    <li><a class="link-primary" href="{{$user->id}}">{{$user->username}}</a></li>
+                    <li>
+                        {{$user->username}}
+                        <a class="link-primary" href="{{ route('comment.get', ['id' => $user->id]) }}">
+                            Комментарии
+                        </a>
+                        |
+                        <a class="link-primary" href="{{ route('library.get', ['id' => $user->id]) }}">
+                            Книги
+                        </a>
+                    </li>
                 @endforeach
         @endif
 @endsection

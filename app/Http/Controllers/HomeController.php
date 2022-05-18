@@ -11,7 +11,7 @@ class HomeController extends Controller
     {
         $user = Auth::user();
         if ($user instanceof User) {
-            return redirect($user->id);
+            return redirect(route('comment.get', ['id' => $user->id]));
         }
 
         return view('home.index');

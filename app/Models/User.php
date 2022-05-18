@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
@@ -83,6 +84,9 @@ class User extends Authenticatable
             ->toArray();
     }
 
+    /**
+     * @return Collection
+     */
     public function getUsers()
     {
         return self::query()->get();

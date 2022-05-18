@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Book;
+use App\Models\Library;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -17,10 +17,10 @@ class CreateAccessTable extends Migration
     {
         Schema::create('access', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Book::class);
-            $table->foreignIdFor(User::class);
-            $table->foreign('book_id')
-                ->references('id')->on('books')
+            $table->foreignIdFor(User::class, 'library_id');
+            $table->foreignIdFor(User::class, 'user_id');
+            $table->foreign('library_id')
+                ->references('id')->on('users')
                 ->onDelete('cascade');
             $table->foreign('user_id')
                 ->references('id')->on('users')

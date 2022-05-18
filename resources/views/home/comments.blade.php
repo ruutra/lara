@@ -1,5 +1,5 @@
 <?php
-$id = \Illuminate\Support\Facades\Route::getCurrentRoute()->parameter('id');
+$id = \Illuminate\Support\Facades\Route::getCurrentRoute()->parameter('id') ?? \Illuminate\Support\Facades\Auth::user()->id;
 ?>
 <div class="comments-wrapper">
 @extends('layouts.app-master')
@@ -35,7 +35,7 @@ $id = \Illuminate\Support\Facades\Route::getCurrentRoute()->parameter('id');
                     <input type="hidden" name="id" value="{{ $comment->id }}" />
                     @include('layouts.partials.messages')
                     @auth()
-                    @if (auth()->user()->id === $comment->author_id)
+                    @if (auth()->user()->id === $comment->author_id || auth()->user()->id === $comment->user_id)
                         <input type="submit" formaction="{{route('comment.delete',$id)}}" class="btn btn-danger" value="Delete"/>
                     @endif
                     <p>
