@@ -34,7 +34,7 @@ class Book extends Model
      * @param $text
      * @return int
      */
-    public function addBook(int $userLibraryId, $name, $text): int
+    public static function addBook(int $userLibraryId, $name, $text): int
     {
         $book = new self();
         $book->name = $name;

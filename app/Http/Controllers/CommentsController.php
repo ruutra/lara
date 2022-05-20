@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Comments;
+use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -23,10 +23,9 @@ class CommentsController extends Controller
      */
     public function getComments(int $userId, Request $request)
     {
-        $comments = (new Comments())->getComments($userId);
+        $comments = (new Comment())->getComments($userId);
         if (empty($comments)) {
-            $comments = (new Comments())->getComments($userId);
-            return view('home.comments')->with('comments', $comments);
+            $comments = (new Comment())->getComments($userId);
         }
         return view('home.comments')->with('comments', $comments);
     }
@@ -38,7 +37,7 @@ class CommentsController extends Controller
      */
     public function getAllComments(int $userId, Request $request)
     {
-        $comments = (new Comments())->getComments($userId, null);
+        $comments = (new Comment())->getComments($userId, null);
         return view('home.comments')->with('comments', $comments);
     }
 
@@ -56,11 +55,12 @@ class CommentsController extends Controller
         if ($validator->fails()) {
             return response()->json(['error'=>$validator->errors()->all()]);
         }
-
+        if(Auth::check()){
         /** @var User $user */
         $user = Auth::user();
-        (new Comments())->addComment($request->get('text'), $userId, $user);
+        (new Comment())->addComment($request->get('text'), $userId, $user);
         return redirect(route('comment.get', ['id' => $userId]));
+        }
     }
 
     /**
@@ -72,13 +72,13 @@ class CommentsController extends Controller
     public function destroy(int $userId,Request $request)
     {
         $id = (int) $request->get('id');
-        (new Comments())->deleteComment($userId, $id, Auth::user());
+        (new Comment())->deleteComment($userId, $id, Auth::user());
         return redirect(route('comment.get', ['id' => $userId]));
     }
 
    public function replyComments(int $userId, Request $request)
    {
-       (new Comments())->replyComment($request->get('text'), $userId, $request->get('id'), Auth::user());
+       (new Comment())->replyComment($request->get('text'), $userId, $request->get('id'), Auth::user());
        return redirect(route('comment.get', ['id' => $userId]));
    }
 }

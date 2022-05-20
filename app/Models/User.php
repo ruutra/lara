@@ -67,7 +67,7 @@ class User extends Authenticatable
     ];
 
     public function comments() {
-        return $this->hasMany(Comments::class);
+        return $this->hasMany(Comment::class);
     }
 
     /**
@@ -89,6 +89,6 @@ class User extends Authenticatable
      */
     public function getUsers()
     {
-        return self::query()->get();
+        return User::all();
     }
 }

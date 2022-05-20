@@ -25,6 +25,14 @@ Route::group(['namespace' => 'App\Http\Controllers'], function()
         Route::post('/login', 'LoginController@login')->name('login.perform');
     });
 
+    Route::group(['middleware'=>['book.read']], function () {
+        Route::get('/book_read/{id}','LibraryController@readBook')->name('book.read');
+    });
+
+    Route::group(['middleware'=>['auth', 'library.read']], function () {
+        Route::get('/{id}/library','LibraryController@getLibrary')->name('library.get');
+    });
+
     Route::group(['middleware' => ['auth']], function() {
         Route::get('/logout', 'LogoutController@perform')->name('logout.perform');
         Route::get('/{id}/username',  'UserController@getUserName')->name('username.get');
@@ -34,7 +42,6 @@ Route::group(['namespace' => 'App\Http\Controllers'], function()
         Route::post('/{id}/reply_comment',  'CommentsController@replyComments')->name('comment.reply');
 
         Route::post('/{id}/add_book','LibraryController@addBook')->name('library.add');
-        Route::get('/{id}/library','LibraryController@getLibrary')->name('library.get');
 
         Route::get('/{id}/enable_access','LibraryController@enableAccess')->name('access.enable');
         Route::get('/{id}/disable_access','LibraryController@disableAccess')->name('access.disable');
@@ -46,5 +53,4 @@ Route::group(['namespace' => 'App\Http\Controllers'], function()
 
     Route::get('/{id}/comments', 'CommentsController@getComments')->name('comment.get');
     Route::get('/{id}/all_comments',  'CommentsController@getAllComments')->name('comment.all');
-    Route::get('/book_read/{id}','LibraryController@readBook')->name('book.read');
 });

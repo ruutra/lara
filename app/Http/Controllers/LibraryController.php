@@ -23,19 +23,16 @@ class LibraryController extends Controller
      * @param Request $request
      * @return Application|ResponseFactory|RedirectResponse|Response|Redirector
      */
-    public function addBook(int $userId, Request $request)
+    public function addBook(Request $request)
     {
         /** @var User $user */
         $user = Auth::user();
-        if ($userId !== $user->id){
-            return response([], 403);
-        }
-
         $name = $request->get('name');
         $text = $request->get('text');
 
-        (new Book())->addBook($user->id, $name, $text);
-        return redirect(route('library.get', ['id' => $userId]));
+        Book::addBook($user->id, $name, $text);
+
+        return redirect(route('library.get', ['id' => $user->id]));
     }
 
     /**
@@ -44,12 +41,7 @@ class LibraryController extends Controller
      */
     public function getLibrary(int $userId)
     {
-        /** @var User $user */
         $user = Auth::user();
-        if (!$user) {
-            return response([], 403);
-        }
-
         $access = new Access();
         $isAccess = $access->isAccess($userId, $user->id);
         if (!$access->isAccess($user->id, $userId)) {
@@ -82,19 +74,6 @@ class LibraryController extends Controller
     public function readBook(int $bookId)
     {
         $book = (new Book())->getBook($bookId);
-        if ($book->public) {
-            return view('layouts.partials.book')
-                ->with('book', $book);
-        }
-
-        $user = Auth::user();
-        if (!$user) {
-            return response([], 403);
-        }
-        if (!(new Book())->isAccess($user->id, $bookId)) {
-            return response([], 403);
-        }
-
         return view('layouts.partials.book')
             ->with('book', $book);
     }

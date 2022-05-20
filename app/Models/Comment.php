@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\DB;
  * @method static find($id)
  */
 
-class Comments extends Model
+class Comment extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -99,6 +99,6 @@ class Comments extends Model
 
     public function comments(): BelongsTo
     {
-        return $this->belongsTo(Comments::class);
+        return $this->belongsTo(Comment::class);
     }
 }
